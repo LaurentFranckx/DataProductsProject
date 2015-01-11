@@ -2,6 +2,27 @@ library(shiny)
 shinyUI(pageWithSidebar(
   headerPanel("Linear model comparison on the mtcar dataset"),
   sidebarPanel(
+      h3("Exploratory data analysis:"),
+        checkboxInput("summary_data", h4("Show summary of dataset"), value = TRUE),
+      
+#       checkboxInput("deciles", "Show  for subset of variables:", value = FALSE),
+#       conditionalPanel(
+#         condition = "input.histogram == true",
+        fluidRow(
+          h4("Show histogram for one selected variable:"),
+          selectInput("histo_var", 
+                      label = "Chosen variable:", 
+                      list("mpg" = "mpg", "cyl" = "cyl", "disp" = "disp", "hp"= "hp", "drat" = "drat", "wt" = "wt", 
+                           "qsec" = "qsec", "vs" = "vs","am"= "am", 
+                           "gear"= "gear", "carb"= "carb"),
+                      selected = "cyl"
+          ),
+          numericInput("bin", 
+                       label = "Maximal number of bins:", 
+                       value = 10)
+          ),
+        
+    
       h3("Parameters for the first model:"),
       checkboxGroupInput("Var_choice_1", 
                        label = h4("Regressors to include in first model:"), 
@@ -57,6 +78,8 @@ em("	 gear:	 Number of forward gears" ),br(),
 em("	 carb:	 Number of carburetors" ),br(),br(),
     
     br(),
+  p("Per default, our model presents the summary statistics for the dataset. The user can also ask for the display
+    of the histogram of one specific variable - he can also chose the maximum number of bins in this histogram. "),
     p("Our application returns the default summary tables for each model, including the model specification, the key
  quantiles of the residuals, the estimated coefficients and their
       significance levels, the R2 and the adjusted R2, the F statistics, etc."),
@@ -69,6 +92,10 @@ em("	 carb:	 Number of carburetors" ),br(),br(),
       be given a meaningfull interpretation if the first model is embedded in the second. "),
 #      ,
   br(),
+    h4('The summary statistics of the model are:'),
+    tableOutput("summary_out"),
+    h4('The histogram of the chosen variable is:'),
+    plotOutput("plothisto"),
     h4('The first model results are:'),
      verbatimTextOutput("modres1"),
     h4('Diagnosis results for the first model:'),

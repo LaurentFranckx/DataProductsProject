@@ -21,6 +21,17 @@ shinyServer(
   
   function(input,output){
     #    output$regressors <- renderPrint({input$Var_choice})
+    output$summary_out <- renderTable({
+      if(input$summary_data) summary(mtcars)
+    })
+    
+    
+    output$plothisto <- renderPlot({
+      xname = reactive(input$histo_var)
+      hist(mtcars[, input$histo_var] , xlab =  xname(), main = paste("Histogram of ", xname()), breaks = input$bin) 
+        
+      }
+    )
     sum1 <- reactive({regression_model(input$Var_choice_1)})
     output$modres1 <- renderPrint({summary(sum1())})
     sum2 <- reactive({regression_model(input$Var_choice_2)})
